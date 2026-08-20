@@ -72,12 +72,17 @@ const asciiBanner = ` __  __       ____   ___  ___  _____
     const statusLabel = document.getElementById('boot-status-label');
     const skipBtn = document.getElementById('skip-boot-btn');
 
+    // 5-Second Authentic Mr. Robot / Offensive Security Sequence
     const bootSteps = [
-      { text: '<span class="text-cyber-cyan">[ 0.0012 ]</span> Probing network interface & active telemetry...', delay: 100, pct: 18 },
-      { text: '<span class="text-cyber-cyan">[ 0.0038 ]</span> Bypassing AMSI & EDR memory inspection hooks... <span class="text-cyber-accent font-bold">[ OK ]</span>', delay: 280, pct: 42 },
-      { text: '<span class="text-cyber-cyan">[ 0.0065 ]</span> Initializing PyScan-AD & Active Directory audit engine... <span class="text-cyber-accent font-bold">[ OK ]</span>', delay: 480, pct: 68 },
-      { text: '<span class="text-cyber-cyan">[ 0.0089 ]</span> Decrypting CVE PoCs, GraphQL exploits & bounty logs... <span class="text-cyber-accent font-bold">[ OK ]</span>', delay: 720, pct: 88 },
-      { text: '<span class="text-cyber-cyan">[ 0.0105 ]</span> root@mrr0807:~# <span class="text-white font-bold">uid=0(root) gid=0(root) ACCESS GRANTED.</span>', delay: 950, pct: 100 }
+      { text: '<span class="text-cyber-cyan">[ 0.12s ]</span> <span class="text-white">INITIALIZING KERNEL:</span> Linux 6.6.9-kali1-amd64 x86_64...', delay: 200, pct: 10, status: 'BOOTING KERNEL...' },
+      { text: '<span class="text-cyber-cyan">[ 0.65s ]</span> <span class="text-white">PROBING INTERFACES:</span> eth0 (10.10.14.8/24), tun0 <span class="text-cyber-accent font-bold">[TUNNEL ESTABLISHED]</span>', delay: 650, pct: 22, status: 'ESTABLISHING ENCRYPTED TUNNEL...' },
+      { text: '<span class="text-cyber-cyan">[ 1.20s ]</span> <span class="text-white">EVADING DEFENSES:</span> Unhooking NTDLL.dll & patching AMSI memory buffer... <span class="text-cyber-accent font-bold">[BYPASSED]</span>', delay: 1200, pct: 36, status: 'BYPASSING DEFENDER & AMSI...' },
+      { text: '<span class="text-cyber-cyan">[ 1.80s ]</span> <span class="text-white">QUERYING ACTIVE DIRECTORY:</span> PyScan-AD auditing LDAP, ADCS & Kerberos KDC... <span class="text-cyber-accent font-bold">[OK]</span>', delay: 1800, pct: 50, status: 'AUDITING ACTIVE DIRECTORY...' },
+      { text: '<span class="text-cyber-cyan">[ 2.45s ]</span> <span class="text-white">KERBEROASTING:</span> Requesting TGS SPN tickets & cracking hashes via Hashcat... <span class="text-cyber-accent font-bold">[CRACKED]</span>', delay: 2450, pct: 64, status: 'CRACKING SERVICE HASHES...' },
+      { text: '<span class="text-cyber-cyan">[ 3.10s ]</span> <span class="text-white">WEB APP EXPLOITS:</span> Probing GraphQL race conditions & AWS IMDS SSRF vectors... <span class="text-cyber-accent font-bold">[EXPLOITED]</span>', delay: 3100, pct: 78, status: 'ANALYZING CLOUD & SSRF VECTORS...' },
+      { text: '<span class="text-cyber-cyan">[ 3.75s ]</span> <span class="text-white">PRIVILEGE ESCALATION:</span> Injecting payload via AlwaysInstallElevated & SUID binaries... <span class="text-cyber-accent font-bold">[SYSTEM]</span>', delay: 3750, pct: 88, status: 'ELEVATING PRIVILEGES TO ROOT...' },
+      { text: '<span class="text-cyber-cyan">[ 4.30s ]</span> <span class="text-white">DECRYPTING ARCHIVE:</span> Loading 40+ CVE Proof-of-Concepts, Cheatsheets & Bounties... <span class="text-cyber-accent font-bold">[READY]</span>', delay: 4300, pct: 96, status: 'DECRYPTING PORTFOLIO ARCHIVES...' },
+      { text: '<span class="text-cyber-cyan">[ 4.80s ]</span> <span class="text-[#00dc82] font-bold">root@MrR0807:~# uid=0(root) gid=0(root) groups=0(root) ACCESS GRANTED.</span>', delay: 4800, pct: 100, status: 'ACCESS GRANTED: WELCOME, OPERATOR MRR0807' }
     ];
 
     let dismissed = false;
@@ -99,28 +104,32 @@ const asciiBanner = ` __  __       ____   ___  ___  _____
     loader.addEventListener('click', dismissLoader);
     window.addEventListener('keydown', dismissLoader, { once: true });
 
-    // Step-by-step terminal execution sequence
+    // Step-by-step terminal execution sequence (Full 5 seconds)
     bootSteps.forEach((step, idx) => {
       setTimeout(() => {
         if (dismissed) return;
 
         if (logContainer) {
           const p = document.createElement('p');
-          p.className = 'leading-relaxed text-[11px] sm:text-xs animate-fade-in';
+          p.className = 'leading-relaxed text-[11px] sm:text-xs animate-fade-in font-mono';
           p.innerHTML = step.text;
           logContainer.appendChild(p);
+          // Auto scroll to bottom
+          logContainer.scrollTop = logContainer.scrollHeight;
         }
 
         if (progressBar) progressBar.style.width = step.pct + '%';
         if (percentLabel) percentLabel.textContent = step.pct + '%';
-        if (statusLabel && idx === bootSteps.length - 1) {
-          statusLabel.textContent = 'SESSION ESTABLISHED: WELCOME, OPERATOR';
-          statusLabel.classList.add('text-[#00dc82]', 'font-bold');
+        if (statusLabel) {
+          statusLabel.textContent = step.status;
+          if (idx === bootSteps.length - 1) {
+            statusLabel.classList.add('text-[#00dc82]', 'font-bold');
+          }
         }
 
-        // Finish sequence
+        // Finish at 5.0 seconds
         if (idx === bootSteps.length - 1) {
-          setTimeout(dismissLoader, 350);
+          setTimeout(dismissLoader, 450);
         }
       }, step.delay);
     });
