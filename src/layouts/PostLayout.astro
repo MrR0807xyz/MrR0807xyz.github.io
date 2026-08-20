@@ -51,16 +51,16 @@ const filteredHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
 ---
 
 <BaseLayout title={title} description={description} image={image} type="article">
-  <div class="flex flex-col xl:flex-row gap-8 xl:gap-12 items-start justify-between w-full">
+  <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 w-full max-w-7xl mx-auto">
     <!-- Article Main Column -->
-    <article class="flex-1 w-full min-w-0 max-w-4xl overflow-hidden">
+    <article class="xl:col-span-8 w-full min-w-0">
       <!-- Breadcrumb -->
       <Breadcrumb items={breadcrumbs} />
 
       <!-- Post Header -->
       <header class="mb-6 sm:mb-8 pb-6 border-b border-[#2c2d2d]">
         <!-- Badges Bar -->
-        <div class="flex flex-wrap items-center gap-2 mb-3">
+        <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-3">
           {categories.map((cat) => (
             <a
               href={`/categories/${cat.toLowerCase()}`}
@@ -90,24 +90,24 @@ const filteredHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
         </div>
 
         <!-- Post Title -->
-        <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight mb-4 font-sans break-words">
+        <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight mb-4 font-sans break-words">
           {title}
         </h1>
 
         <!-- Post Meta Line -->
-        <div class="flex flex-wrap items-center gap-3 sm:gap-4 text-xs font-mono text-[#868686]">
+        <div class="flex flex-wrap items-center gap-2 sm:gap-4 text-xs font-mono text-[#868686]">
           <span class="flex items-center gap-1.5">
-            <svg class="w-4 h-4 text-cyber-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <svg class="w-4 h-4 text-cyber-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             {pubDate}
           </span>
-          <span>•</span>
+          <span class="hidden sm:inline">•</span>
           <span class="flex items-center gap-1.5">
-            <svg class="w-4 h-4 text-cyber-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            <svg class="w-4 h-4 text-cyber-cyan shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
             {author}
           </span>
-          <span>•</span>
+          <span class="hidden sm:inline">•</span>
           <span class="flex items-center gap-1.5">
-            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <svg class="w-4 h-4 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             <span data-i18n="securityResearchBadge">Security Research</span>
           </span>
         </div>
@@ -172,7 +172,7 @@ const filteredHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
         <!-- Responsible Disclosure Notice -->
         <div class="bg-[#1e1e1e] border border-[#2c2d2d] rounded-xl p-4 text-xs font-sans text-[#868686] leading-relaxed">
           <p class="font-mono text-white font-bold mb-1 flex items-center gap-2">
-            <svg class="w-4 h-4 text-cyber-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <svg class="w-4 h-4 text-cyber-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
             <span>{author} • </span><span data-i18n="responsibleNoticeTitle">Responsible Disclosure Notice</span>
           </p>
           <span data-i18n="responsibleNoticeText">This technical article is published for defensive research and educational purposes. All vulnerabilities discussed here have been properly reported and patched by the respective vendors.</span>
@@ -195,6 +195,10 @@ const filteredHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
     </article>
 
     <!-- Floating Sticky Table of Contents (Desktop) -->
-    <Toc headings={headings} />
+    <aside class="hidden xl:block xl:col-span-4 w-full">
+      <div class="sticky top-20">
+        <Toc headings={filteredHeadings} />
+      </div>
+    </aside>
   </div>
 </BaseLayout>

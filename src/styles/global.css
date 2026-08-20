@@ -516,3 +516,8 @@ body {
   display: none !important;
 }
 
+/* Fast Navigation Override - Instant display on internal page clicks */
+html.no-bootloader #cyber-bootloader {
+  display: none !important;
+}
+

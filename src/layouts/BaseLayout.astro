@@ -33,8 +33,9 @@ const fullTitle = title === SITE_CONFIG.title ? title : `${title} | ${SITE_CONFI
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
 
-    <!-- Theme Initialization to prevent Flash of Unstyled Content (FOUC) -->
+    <!-- Theme & Bootloader Initialization (Runs synchronously before DOM paint) -->
     <script is:inline>
+      // Theme check
       const theme = (() => {
         if (typeof localStorage !== 'undefined' && localStorage.getItem('site_theme')) {
           return localStorage.getItem('site_theme');
@@ -51,6 +52,18 @@ const fullTitle = title === SITE_CONFIG.title ? title : `${title} | ${SITE_CONFI
         document.documentElement.classList.remove('light');
         document.documentElement.classList.add('dark');
       }
+
+      // Bootloader check: ONLY show on first visit in session or on page refresh
+      try {
+        const isReload = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]?.type === 'reload') ||
+                         (window.performance && window.performance.navigation && window.performance.navigation.type === 1);
+        const hasBooted = sessionStorage.getItem('mrr0807_session_booted');
+        if (hasBooted && !isReload) {
+          document.documentElement.classList.add('no-bootloader');
+        } else {
+          sessionStorage.setItem('mrr0807_session_booted', 'true');
+        }
+      } catch (e) {}
     </script>
 
     <!-- SEO Meta Tags -->

@@ -63,6 +63,15 @@ const asciiBanner = ` __  __       ____   ___  ___  _____
 
 <script is:inline>
   (function initCyberBootloader() {
+    if (document.documentElement.classList.contains('no-bootloader')) {
+      const el = document.getElementById('cyber-bootloader');
+      if (el) {
+        el.style.display = 'none';
+        if (el.parentNode) el.parentNode.removeChild(el);
+      }
+      return;
+    }
+
     const loader = document.getElementById('cyber-bootloader');
     if (!loader) return;
 
