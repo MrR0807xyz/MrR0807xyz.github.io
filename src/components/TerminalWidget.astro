@@ -1,0 +1,126 @@
+---
+---
+
+<div class="terminal-widget bg-[#141416] border border-[#2c2d2d] rounded-xl overflow-hidden shadow-xl font-mono text-xs my-6">
+  <!-- Terminal Top Bar -->
+  <div class="bg-[#1e1e1e] border-b border-[#2c2d2d] px-4 py-2 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <span class="w-3 h-3 rounded-full bg-red-500/80 inline-block"></span>
+      <span class="w-3 h-3 rounded-full bg-amber-500/80 inline-block"></span>
+      <span class="w-3 h-3 rounded-full bg-green-500/80 inline-block"></span>
+      <span class="text-cyber-muted text-[11px] ml-2">mrr0807@security-lab:~</span>
+    </div>
+    <div class="flex items-center gap-2 text-[10px] text-cyber-accent font-bold">
+      <span class="w-1.5 h-1.5 rounded-full bg-cyber-accent animate-pulse"></span>
+      <span>INTERACTIVE TERMINAL</span>
+    </div>
+  </div>
+
+  <!-- Terminal Output Area -->
+  <div id="terminal-screen" class="p-4 space-y-2 max-h-52 overflow-y-auto leading-relaxed text-cyber-text select-text">
+    <div class="text-cyber-muted">
+      # MrR0807 Offensive Security Console v2.4.0
+    </div>
+    <div class="text-cyber-muted">
+      # Type <span class="text-cyber-accent font-bold">help</span>, <span class="text-cyber-cyan font-bold">skills</span>, <span class="text-amber-400 font-bold">tools</span>, or <span class="text-purple-400 font-bold">whoami</span> to inspect capabilities.
+    </div>
+    <div class="pt-1">
+      <span class="text-cyber-accent font-bold">mrr0807@kali:~$</span> <span class="text-white font-bold">pyscan-ad --domain corp.local --audit</span>
+    </div>
+    <div class="text-cyber-muted pl-4 border-l-2 border-cyber-accent/40 space-y-0.5 text-[11px]">
+      <div>[+] Connected to LDAP service at dc01.corp.local (389/TCP)</div>
+      <div>[+] Auditing Domain Object ACLs and PKINIT Cert Authorities...</div>
+      <div class="text-red-400">[!] VULNERABILITY FOUND: ESC1 misconfigured Certificate Template 'WebServer-ClientAuth'</div>
+      <div class="text-cyber-accent">[✓] Exploitation Path Verified: Domain Admin privilege escalation achievable</div>
+    </div>
+  </div>
+
+  <!-- Command Input Line -->
+  <div class="px-4 py-2.5 bg-[#18181b] border-t border-[#2c2d2d] flex items-center gap-2">
+    <span class="text-cyber-accent font-bold shrink-0">mrr0807@kali:~$</span>
+    <input
+      type="text"
+      id="terminal-input"
+      class="bg-transparent border-none outline-none text-white font-mono text-xs w-full placeholder:text-cyber-muted/50"
+      placeholder="Type command ('help', 'tools', 'whoami')..."
+      autocomplete="off"
+      spellcheck="false"
+    />
+  </div>
+</div>
+
+<script>
+  function initTerminal() {
+    const input = document.getElementById('terminal-input') as HTMLInputElement;
+    const screen = document.getElementById('terminal-screen');
+
+    if (!input || !screen) return;
+
+    const commands: Record<string, string> = {
+      whoami: `<div class="text-cyber-accent font-bold">Abubakar Jamilu Bashir (@MrR0807)</div>
+<div class="text-cyber-muted">Offensive Security Practitioner | Bug Bounty Hunter | Active Directory Specialist</div>
+<div class="text-cyber-muted">LinkedIn: https://ng.linkedin.com/in/abubakar-jamilu-428960226</div>`,
+      
+      help: `<div class="text-white font-bold">Available Commands:</div>
+<div>- <span class="text-cyber-accent">skills</span>: List technical offensive security skills</div>
+<div>- <span class="text-cyber-cyan">tools</span>: Display custom red team tools (FastFuzz, pyScan-AD)</div>
+<div>- <span class="text-amber-400">bounties</span>: View bug bounty research & disclosures</div>
+<div>- <span class="text-purple-400">whoami</span>: View researcher profile info</div>
+<div>- <span class="text-red-400">clear</span>: Clear terminal console</div>`,
+
+      skills: `<div class="text-cyber-cyan font-bold">Core Offensive Capabilities:</div>
+<div>✓ Active Directory Attacks: Kerberoasting, AS-REP, ADCS (ESC1-ESC8), DCSync</div>
+<div>✓ Web App Penetration Testing: OWASP Top 10, IDOR, SSRF, GraphQL Exploitation</div>
+<div>✓ Privilege Escalation: Linux SUID, Kernel Exploits, Windows Token Impersonation</div>
+<div>✓ Binary & Exploit Development: Python, Golang, Bash, Shiki PoC tooling</div>`,
+
+      tools: `<div class="text-cyber-accent font-bold">Custom Open-Source Security Tooling:</div>
+<div>⚡ <a href="/posts/fastfuzz-go-web-discovery-tool" class="text-cyber-cyan underline">FastFuzz</a>: High-performance concurrent web fuzzing engine in Go</div>
+<div>🛡️ <a href="/posts/pyscan-ad-active-directory-auditor" class="text-cyber-cyan underline">pyScan-AD</a>: Automated Active Directory Enumeration & ACL Auditor</div>`,
+
+      bounties: `<div class="text-amber-400 font-bold">High-Impact Bounty Disclosures:</div>
+<div>💰 <a href="/posts/oauth2-pre-account-takeover" class="text-white underline">OAuth2 Pre-Account Takeover</a> (Critical - $3,500)</div>
+<div>💰 <a href="/posts/blind-ssrf-pdf-exporter-aws-metadata" class="text-white underline">Blind SSRF to AWS IMDSv1/v2</a> (High - $2,500)</div>
+<div>💰 <a href="/posts/race-condition-graphql-wallet-bypass" class="text-white underline">GraphQL Concurrency Race Condition</a> (Critical - $4,000)</div>`,
+
+      clear: '__CLEAR__'
+    };
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const query = input.value.trim().toLowerCase();
+        if (!query) return;
+
+        if (query === 'clear') {
+          screen.innerHTML = '';
+          input.value = '';
+          return;
+        }
+
+        const promptLine = document.createElement('div');
+        promptLine.className = 'pt-1';
+        promptLine.innerHTML = `<span class="text-cyber-accent font-bold">mrr0807@kali:~$</span> <span class="text-white">${query}</span>`;
+        screen.appendChild(promptLine);
+
+        const responseDiv = document.createElement('div');
+        responseDiv.className = 'pl-3 border-l-2 border-cyber-accent/40 space-y-0.5 text-[11px] text-cyber-muted';
+
+        if (commands[query]) {
+          responseDiv.innerHTML = commands[query];
+        } else {
+          responseDiv.innerHTML = `<div class="text-red-400">Command not found: "${query}". Type <span class="text-cyber-accent font-bold">help</span> for available commands.</div>`;
+        }
+
+        screen.appendChild(responseDiv);
+        input.value = '';
+        screen.scrollTop = screen.scrollHeight;
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTerminal);
+  } else {
+    initTerminal();
+  }
+</script>

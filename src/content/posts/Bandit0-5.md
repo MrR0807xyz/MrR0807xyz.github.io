@@ -1,0 +1,432 @@
+---
+image: "/assets/img/posts/banditcover_80c40419ad.png"
+title: "Bandit0 5"
+description: "Detailed offensive security CTF walkthrough and exploit analysis for Bandit0-5."
+pubDate: "2023-09-02"
+author: "MrR0807"
+categories: ["CTF"]
+tags: ["cybersecurity", "writeup"]
+pin: false
+---
+Hello, Have you ever been intrigued by the world of ethical hacking but didnt know where to start? Look no further than the Bandit wargame by OverTheWire. Designed with absolute beginners in mind, Bandit is the perfect entry point into the realm of ethical hacking. In this comprehensive blog post, well take you through the thrilling challenges of Bandit levels 0 to 7, providing step-by-step walkthroughs, insights, and tips.
+
+
+
+## What is Bandit?
+
+
+
+The Bandit wargame is aimed at absolute beginners. It will teach you the basics needed to be able to play other wargames, making it an invaluable learning resource for those taking their first steps into the exciting world of ethical hacking.
+
+
+
+## Level 1 : Read a File.
+
+
+
+GOAL: The password for the next level is stored in a file called readme located in the home directory. Use this password to log into bandit1 using SSH. Whenever you find a password for a level, use SSH (on port 2220) to log into that level and continue the game.
+
+
+
+SOLUTION:
+
+
+
+  `
+
+
+
+
+
+```bash
+
+$ ssh bandit0@bandit.labs.overthewire.org -p 2220                                                                                                          
+
+This is a OverTheWire game server. More information on http://www.overthewire.org/wargames                                                                                                                                                                                            
+
+bandit0@bandit.labs.overthewire.orgs password:                                                                                                              
+
+Linux bandit.otw.local 5.4.8 x86_64 GNU/Linux                                                                                                                
+
+
+
+      ,----..            ,----,          .---.                                                                                                               
+
+     /   /   \         ,/   .`|         /. ./|                                                                                                               
+
+    /   .     :      ,`   .  :     .--.   ;                                                                                                               
+
+   .   /   ;.  \   ;    ;     /    /__./ \ : |                                                                                                               
+
+  .   ;   /  ` ; .___,/    , .--.     \ .                                                                                                               
+
+  ;   |  ; \ ; | |    :     | /___/ \ |                                                                                                                    
+
+  |   :  | ; |  ;    |.;  ; ;   \  \;      :                                                                                                               
+
+  .   |     : `----  |  |  \   ;  `      |                                                                                                               
+
+     ;  \; /  |        :  ;   .   \    .\  ;                                                                                                               
+
+   \   \  ,  /      |   |      \   \    \ |                                                                                                               
+
+    ;   :    /          :  |     :     |--"                                                                                                                
+
+     \   \ .        ;   |.       \   \ ;                                                                                                                   
+
+  www. `---` ver     --- he       ---" ire.org                                                                                                            
+
+
+
+Welcome to OverTheWire!                                                                                                                                      
+
+
+
+If you find any problems, please report them to Steven or morla on                                                                                           
+
+irc.overthewire.org.                                                                                                                                         
+
+
+
+--[ Playing the games ]--
+
+
+
+Enjoy your stay!
+
+
+
+bandit0@bandit:~$
+
+
+
+```
+
+`
+
+
+
+We list the content of the current directory, we find a file called readme, we read it and we get the password.
+
+
+
+  `
+
+
+
+
+
+```bash
+
+bandit0@bandit:~$ ls -al
+
+total 24
+
+drwxr-xr-x  2 root    root    4096 May  7  2020 .
+
+drwxr-xr-x 41 root    root    4096 May  7  2020 ..
+
+-rw-r--r--  1 root    root     220 May 15  2017 .bash_logout
+
+-rw-r--r--  1 root    root    3526 May 15  2017 .bashrc
+
+-rw-r--r--  1 root    root     675 May 15  2017 .profile
+
+-rw-r-----  1 bandit1 bandit0   33 May  7  2020 readme
+
+bandit0@bandit:~$ cat readme
+
+boJ9jbbUNNfktd78OOpsqOlxxxxxxxxx
+
+bandit0@bandit:~$
+
+
+
+```
+
+`
+
+## Level 2: Unusually named Files.
+
+
+
+GOAL: The password for the next level is stored in a file called - located in the home directory
+
+
+
+SOLUTION
+
+
+
+  `
+
+
+
+
+
+```bash
+
+$ ssh bandit1@bandit.labs.overthewire.org -p 2220                            
+
+This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
+
+
+
+bandit1@bandit.labs.overthewire.orgs password:
+
+
+
+bandit1@bandit:~$ ls
+
+-
+
+bandit1@bandit:~$ cat -
+
+
+
+```
+
+`
+
+
+
+We cant read it the normal way. We search for this problem, and find we can read it using cat ./-
+
+
+
+  `
+
+
+
+
+
+```bash
+
+bandit1@bandit:~$ cat ./-
+
+CV1DtqXWVFXTvM2F0k09SHzxxxxxxxxx
+
+bandit1@bandit:~$
+
+
+
+```
+
+`
+
+## Level 3: Spaces in a filename.
+
+
+
+GOAL: The password for the next level is stored in a file called spaces in this filename located in the home directory
+
+
+
+SOLUTION
+
+
+
+  `
+
+
+
+
+
+```bash
+
+$ ssh bandit2@bandit.labs.overthewire.org -p 2220                            
+
+This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
+
+
+
+bandit2@bandit.labs.overthewire.orgs password:
+
+bandit2@bandit:~$ ls -al
+
+total 24
+
+drwxr-xr-x  2 root    root    4096 May  7  2020 .
+
+drwxr-xr-x 41 root    root    4096 May  7  2020 ..
+
+-rw-r--r--  1 root    root     220 May 15  2017 .bash_logout
+
+-rw-r--r--  1 root    root    3526 May 15  2017 .bashrc
+
+-rw-r--r--  1 root    root     675 May 15  2017 .profile
+
+-rw-r-----  1 bandit3 bandit2   33 May  7  2020 spaces in this filename
+
+bandit2@bandit:~$ cat spaces\ in\ this\ filename
+
+UmHadQclWmgdLOKQ3YNgjWxGoRMb5xxx
+
+bandit2@bandit:~$
+
+
+
+```
+
+`
+
+## Level 4: Hidden Files.
+
+
+
+GOAL: The password for the next level is stored in a hidden file in the inhere directory.
+
+
+
+SOLUTION:
+
+
+
+  `
+
+
+
+
+
+```bash
+
+$ ssh bandit3@bandit.labs.overthewire.org -p 2220                            
+
+This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
+
+
+
+bandit3@bandit.labs.overthewire.orgs password:
+
+bandit3@bandit:~$ cd inhere/
+
+bandit3@bandit:~/inhere$ ls
+
+bandit3@bandit:~/inhere$ ls -al
+
+total 12
+
+drwxr-xr-x 2 root    root    4096 May  7  2020 .
+
+drwxr-xr-x 3 root    root    4096 May  7  2020 ..
+
+-rw-r----- 1 bandit4 bandit3   33 May  7  2020 .hidden
+
+bandit3@bandit:~/inhere$ cat .hidden
+
+pIwrPrtPN36QITSp3EQaw936yaFoFxxx
+
+bandit3@bandit:~/inhere$
+
+
+
+```
+
+`
+
+## Level 5: File types, specifically human-readable files.
+
+
+
+GOAL The password for the next level is stored in the only human-readable file in the inhere directory. Tip: if your terminal is messed up, try the “reset” command.
+
+
+
+SOLUTION
+
+
+
+  `
+
+
+
+
+
+```bash
+
+$ ssh bandit4@bandit.labs.overthewire.org -p 2220                            
+
+This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
+
+
+
+bandit4@bandit.labs.overthewire.orgs password:
+
+bandit4@bandit:~$ ls
+
+inhere
+
+bandit4@bandit:~$ cd inhere/
+
+bandit4@bandit:~/inhere$ ls
+
+-file00  -file01  -file02  -file03  -file04  -file05  -file06  -file07  -file08  -file09
+
+bandit4@bandit:~/inhere$ cat ./-file00
+
+/`2ғ%rL~5gbandit4@bandit:~/inhere$
+
+
+
+```
+
+`
+
+
+
+We get some weird data when we try to read the file, lets list the type of every file with the command file
+
+
+
+  `
+
+
+
+
+
+```bash
+
+bandit4@bandit:~/inhere$ file ./*
+
+./-file00: data
+
+./-file01: data
+
+./-file02: data
+
+./-file03: data
+
+./-file04: data
+
+./-file05: data
+
+./-file06: data
+
+./-file07: ASCII text
+
+./-file08: data
+
+./-file09: data
+
+bandit4@bandit:~/inhere$ cat ./-file07
+
+koReBOKuIDDepwhWk7jZC0RTdopnAxxx
+
+bandit4@bandit:~/inhere$
+
+
+
+```
+
+`
+
+## Conclusion
+
+
+
+In summary, the initial levels of OverTheWires Bandit provide an immersive introduction to ethical hacking. Through diverse challenges, you learn command-line navigation, uncover hidden files, and analyze content types. These levels establish fundamental skills for beginners in cybersecurity. Each step brings you closer to mastering skills applicable in real-world scenarios. Dive into the next levels to continue this rewarding journey.
+
+
+
+ Share        [](https://twitter.com/intent/tweet?text=Hacking%20for%20Beginners%20-%20Bandit%20Levels%201-5%20on%20OverTheWire%20-%20%E1%97%A9%E1%97%B7%E1%97%AAO%E1%91%8C%E1%92%AA%E1%97%A9YE&url=https%3A%2F%2F0xMrR0807.github.io%2Fposts%2FBandit0-5%2F)       [](https://www.facebook.com/sharer/sharer.php?title=Hacking%20for%20Beginners%20-%20Bandit%20Levels%201-5%20on%20OverTheWire%20-%20%E1%97%A9%E1%97%B7%E1%97%AAO%E1%91%8C%E1%92%AA%E1%97%A9YE&u=https%3A%2F%2F0xMrR0807.github.io%2Fposts%2FBandit0-5%2F)       [](https://t.me/share/url?url=https%3A%2F%2F0xMrR0807.github.io%2Fposts%2FBandit0-5%2F&text=Hacking%20for%20Beginners%20-%20Bandit%20Levels%201-5%20on%20OverTheWire%20-%20%E1%97%A9%E1%97%B7%E1%97%AAO%E1%91%8C%E1%92%AA%E1%97%A9YE)       [](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2F0xMrR0807.github.io%2Fposts%2FBandit0-5%2F)
+

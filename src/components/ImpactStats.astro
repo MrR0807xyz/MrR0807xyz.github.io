@@ -1,0 +1,61 @@
+---
+import { SITE_CONFIG } from '../config';
+---
+
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 my-6">
+  <!-- Stat 1: Writeups & Vulnerabilities -->
+  <div class="bg-[#1e1e1e] border border-[#2c2d2d] hover:border-cyber-accent/50 rounded-xl p-4 transition-all duration-300 group shadow-sm">
+    <div class="flex items-center justify-between mb-2">
+      <span class="text-xs font-mono text-cyber-muted uppercase tracking-wider">Research & CTFs</span>
+      <span class="p-1.5 rounded-lg bg-cyber-accent/10 text-cyber-accent border border-cyber-accent/30 text-xs">🛡️</span>
+    </div>
+    <div class="text-2xl sm:text-3xl font-extrabold font-mono text-white group-hover:text-cyber-accent transition-colors">
+      40+
+    </div>
+    <p class="text-[11px] text-cyber-muted mt-1 leading-tight">
+      Public Exploits & Rooted Targets
+    </p>
+  </div>
+
+  <!-- Stat 2: Bounty Discoveries -->
+  <div class="bg-[#1e1e1e] border border-[#2c2d2d] hover:border-amber-400/50 rounded-xl p-4 transition-all duration-300 group shadow-sm">
+    <div class="flex items-center justify-between mb-2">
+      <span class="text-xs font-mono text-cyber-muted uppercase tracking-wider">Bounty Impact</span>
+      <span class="p-1.5 rounded-lg bg-amber-400/10 text-amber-400 border border-amber-400/30 text-xs">💰</span>
+    </div>
+    <div class="text-2xl sm:text-3xl font-extrabold font-mono text-white group-hover:text-amber-400 transition-colors">
+      $10k+
+    </div>
+    <p class="text-[11px] text-cyber-muted mt-1 leading-tight">
+      Critical & High Severity Bounties
+    </p>
+  </div>
+
+  <!-- Stat 3: Active Directory & Cloud -->
+  <div class="bg-[#1e1e1e] border border-[#2c2d2d] hover:border-cyber-cyan/50 rounded-xl p-4 transition-all duration-300 group shadow-sm">
+    <div class="flex items-center justify-between mb-2">
+      <span class="text-xs font-mono text-cyber-muted uppercase tracking-wider">AD & Cloud Paths</span>
+      <span class="p-1.5 rounded-lg bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/30 text-xs">⚡</span>
+    </div>
+    <div class="text-2xl sm:text-3xl font-extrabold font-mono text-white group-hover:text-cyber-cyan transition-colors">
+      15+
+    </div>
+    <p class="text-[11px] text-cyber-muted mt-1 leading-tight">
+      Kerberos, ADCS & AWS Vectors
+    </p>
+  </div>
+
+  <!-- Stat 4: Custom Security Tools -->
+  <div class="bg-[#1e1e1e] border border-[#2c2d2d] hover:border-purple-400/50 rounded-xl p-4 transition-all duration-300 group shadow-sm">
+    <div class="flex items-center justify-between mb-2">
+      <span class="text-xs font-mono text-cyber-muted uppercase tracking-wider">Custom Tooling</span>
+      <span class="p-1.5 rounded-lg bg-purple-400/10 text-purple-400 border border-purple-400/30 text-xs">🛠️</span>
+    </div>
+    <div class="text-2xl sm:text-3xl font-extrabold font-mono text-white group-hover:text-purple-400 transition-colors">
+      2 Tools
+    </div>
+    <p class="text-[11px] text-cyber-muted mt-1 leading-tight">
+      FastFuzz (Go) & pyScan-AD (Python)
+    </p>
+  </div>
+</div>

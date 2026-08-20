@@ -1,0 +1,114 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { SITE_CONFIG } from '../config';
+---
+
+<BaseLayout title="About & Responsible Disclosure Policy">
+  <div class="max-w-4xl mx-auto space-y-8">
+    <Breadcrumb items={[{ label: 'ABOUT' }]} />
+
+    <!-- Profile Header Card -->
+    <div class="bg-cyber-card border border-cyber-border rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col sm:flex-row items-center sm:items-start gap-6">
+      <div class="w-32 h-32 rounded-full overflow-hidden border-2 border-cyber-accent shadow-[0_0_25px_rgba(0,220,130,0.3)] shrink-0">
+        <img src={SITE_CONFIG.avatar} alt={SITE_CONFIG.author} class="w-full h-full object-cover" />
+      </div>
+      <div class="space-y-3 text-center sm:text-left flex-1">
+        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-white font-sans whitespace-nowrap">{SITE_CONFIG.author}</h1>
+          <span class="text-xs font-mono font-bold bg-cyber-accent/10 text-cyber-accent px-2.5 py-1 rounded border border-cyber-accent/30">
+            @{SITE_CONFIG.handle}
+          </span>
+          <span class="text-xs font-mono font-bold bg-cyber-cyan/10 text-cyber-cyan px-2.5 py-1 rounded border border-cyber-cyan/30">
+            SECURITY RESEARCHER
+          </span>
+        </div>
+        <p class="text-sm text-cyber-cyan font-mono">{SITE_CONFIG.tagline}</p>
+        <p class="text-sm text-cyber-muted leading-relaxed">
+          Passionate bug bounty hunter, offensive security practitioner, and CTF player. Specializing in Web Application Security (IDOR, SSRF, Auth Bypass, Business Logic Flaws), Active Directory exploitation, and Privilege Escalation.
+        </p>
+
+        <!-- Social Badges -->
+        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-2">
+          {SITE_CONFIG.socials.hackerone && (
+            <a href={SITE_CONFIG.socials.hackerone} target="_blank" rel="noopener noreferrer" class="px-3 py-1 rounded bg-cyber-bg border border-cyber-border text-xs font-mono text-white hover:border-cyber-accent hover:text-cyber-accent transition-all">
+              🛡️ HackerOne
+            </a>
+          )}
+          {SITE_CONFIG.socials.bugcrowd && (
+            <a href={SITE_CONFIG.socials.bugcrowd} target="_blank" rel="noopener noreferrer" class="px-3 py-1 rounded bg-cyber-bg border border-cyber-border text-xs font-mono text-white hover:border-orange-400 hover:text-orange-400 transition-all">
+              🐛 Bugcrowd
+            </a>
+          )}
+          {SITE_CONFIG.socials.hackthebox && (
+            <a href={SITE_CONFIG.socials.hackthebox} target="_blank" rel="noopener noreferrer" class="px-3 py-1 rounded bg-cyber-bg border border-cyber-border text-xs font-mono text-white hover:border-emerald-400 hover:text-emerald-400 transition-all">
+              📦 HackTheBox
+            </a>
+          )}
+          {SITE_CONFIG.socials.tryhackme && (
+            <a href={SITE_CONFIG.socials.tryhackme} target="_blank" rel="noopener noreferrer" class="px-3 py-1 rounded bg-cyber-bg border border-cyber-border text-xs font-mono text-white hover:border-red-400 hover:text-red-400 transition-all">
+              🔥 TryHackMe
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+
+    <!-- Methodology & Research Interests -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-cyber-card border border-cyber-border rounded-xl p-6 shadow-sm space-y-3">
+        <h2 class="text-lg font-bold text-white font-mono flex items-center gap-2">
+          <svg class="w-5 h-5 text-cyber-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          Bug Hunting & Skillsets
+        </h2>
+        <ul class="space-y-2 text-xs font-mono text-cyber-muted">
+          <li class="flex items-center gap-2"><span class="text-cyber-accent">✓</span> Web App Penetration Testing (OWASP Top 10)</li>
+          <li class="flex items-center gap-2"><span class="text-cyber-accent">✓</span> API Security & Broken Object Level Authorization</li>
+          <li class="flex items-center gap-2"><span class="text-cyber-accent">✓</span> Active Directory Attacks (Kerberoasting, ADCS)</li>
+          <li class="flex items-center gap-2"><span class="text-cyber-accent">✓</span> Linux / Windows Privilege Escalation</li>
+          <li class="flex items-center gap-2"><span class="text-cyber-accent">✓</span> Custom Exploit PoC Development (Python, Go, Bash)</li>
+        </ul>
+      </div>
+
+      <div class="bg-cyber-card border border-cyber-border rounded-xl p-6 shadow-sm space-y-3">
+        <h2 class="text-lg font-bold text-white font-mono flex items-center gap-2">
+          <svg class="w-5 h-5 text-cyber-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+          Offensive Tooling
+        </h2>
+        <div class="flex flex-wrap gap-1.5">
+          {['Burp Suite Pro', 'FFUF', 'Nuclei', 'BloodHound', 'Impacket', 'Nmap', 'Hashcat', 'John The Ripper', 'SQLmap', 'Docker', 'Wireshark'].map((tool) => (
+            <span class="px-2.5 py-1 rounded bg-cyber-bg border border-cyber-border text-[11px] font-mono text-cyber-cyan">
+              {tool}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Responsible Disclosure Policy -->
+    <div class="bg-cyber-card border border-cyber-border rounded-xl p-6 sm:p-8 shadow-sm space-y-4">
+      <h2 class="text-xl font-bold text-white font-mono flex items-center gap-2">
+        <svg class="w-5 h-5 text-cyber-crimson" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        Responsible Disclosure Policy
+      </h2>
+      <div class="text-xs text-cyber-muted space-y-2 leading-relaxed">
+        <p>
+          I strongly advocate for responsible and coordinated vulnerability disclosure (CVD). All research published on this website adheres to the following principles:
+        </p>
+        <ul class="list-disc pl-5 space-y-1 text-cyber-text">
+          <li>Zero disclosure before full vendor notification and patch release.</li>
+          <li>Redaction of sensitive targets, customer identifiers, and private tokens.</li>
+          <li>Proof-of-concept exploits are shared solely for defensive and educational analysis.</li>
+        </ul>
+      </div>
+
+      <!-- PGP Fingerprint Box -->
+      {SITE_CONFIG.pgp && (
+        <div class="mt-4 pt-4 border-t border-cyber-border/60">
+          <span class="text-xs font-mono font-bold uppercase text-white block mb-1">PGP Public Key Fingerprint</span>
+          <pre class="bg-cyber-bg p-3 rounded-lg border border-cyber-border text-xs font-mono text-cyber-accent select-all overflow-x-auto">{SITE_CONFIG.pgp.fingerprint}</pre>
+        </div>
+      )}
+    </div>
+  </div>
+</BaseLayout>

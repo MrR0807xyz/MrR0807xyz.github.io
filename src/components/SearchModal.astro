@@ -1,0 +1,138 @@
+---
+---
+
+<div id="search-modal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-start justify-center pt-20 px-4">
+  <div class="bg-cyber-card border border-cyber-border rounded-xl w-full max-w-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+    <!-- Search Input Header -->
+    <div class="flex items-center gap-3 px-4 py-3.5 border-b border-cyber-border bg-cyber-sidebar">
+      <svg class="w-5 h-5 text-cyber-muted shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      <input
+        type="text"
+        id="search-query"
+        data-i18n-placeholder="searchPlaceholder"
+        placeholder="Search writeups, CVEs, tools, or techniques... (e.g. RCE, IDOR, HackTheBox)"
+        class="w-full bg-transparent text-sm text-white placeholder-cyber-muted focus:outline-none font-sans"
+        autocomplete="off"
+      />
+      <button id="close-search-btn" class="text-xs font-mono text-cyber-muted hover:text-white bg-cyber-card px-2 py-1 rounded border border-cyber-border">
+        ESC
+      </button>
+    </div>
+
+    <!-- Search Results Container -->
+    <div id="search-results" class="max-h-96 overflow-y-auto p-3 space-y-2 divide-y divide-cyber-border/40">
+      <div class="text-center py-8 text-xs text-cyber-muted font-mono">
+        Type to search across all writeups, CVE reports, and cheatsheets...
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let searchData = [];
+  let isFetched = false;
+
+  const modal = document.getElementById('search-modal');
+  const input = document.getElementById('search-query') as HTMLInputElement;
+  const resultsContainer = document.getElementById('search-results');
+  const closeBtn = document.getElementById('close-search-btn');
+
+  async function loadSearchIndex() {
+    if (!isFetched) {
+      try {
+        const res = await fetch('/search.json');
+        searchData = await res.json();
+        isFetched = true;
+      } catch (err) {
+        console.error('Failed to load search index:', err);
+      }
+    }
+  }
+
+  function openSearch() {
+    modal?.classList.remove('hidden');
+    input?.focus();
+    loadSearchIndex();
+  }
+
+  function closeSearch() {
+    modal?.classList.add('hidden');
+    if (input) input.value = '';
+    renderResults([]);
+  }
+
+  // Keyboard shortcut listener: Ctrl+K, Cmd+K, or "/"
+  window.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      modal?.classList.contains('hidden') ? openSearch() : closeSearch();
+    } else if (e.key === '/' && modal?.classList.contains('hidden') && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
+      e.preventDefault();
+      openSearch();
+    } else if (e.key === 'Escape' && !modal?.classList.contains('hidden')) {
+      closeSearch();
+    }
+  });
+
+  // Global Click Delegation for Search Modal
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('[data-open-search]')) {
+      e.preventDefault();
+      openSearch();
+      return;
+    }
+    if (target.closest('#close-search-btn') || target === modal) {
+      e.preventDefault();
+      closeSearch();
+    }
+  });
+
+  closeBtn?.addEventListener('click', closeSearch);
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) closeSearch();
+  });
+
+  input?.addEventListener('input', (e) => {
+    const q = (e.target as HTMLInputElement).value.trim().toLowerCase();
+    if (!q) {
+      if (resultsContainer) {
+        resultsContainer.innerHTML = `<div class="text-center py-8 text-xs text-cyber-muted font-mono">Type to search across all writeups, CVE reports, and cheatsheets...</div>`;
+      }
+      return;
+    }
+
+    const filtered = searchData.filter((item: any) => {
+      const matchTitle = item.title?.toLowerCase().includes(q);
+      const matchDesc = item.description?.toLowerCase().includes(q);
+      const matchTags = item.tags?.some((t: string) => t.toLowerCase().includes(q));
+      const matchCat = item.categories?.some((c: string) => c.toLowerCase().includes(q));
+      return matchTitle || matchDesc || matchTags || matchCat;
+    });
+
+    renderResults(filtered);
+  });
+
+  function renderResults(items: any[]) {
+    if (!resultsContainer) return;
+    if (items.length === 0) {
+      resultsContainer.innerHTML = `<div class="text-center py-8 text-xs text-cyber-muted font-mono">No matching security research found.</div>`;
+      return;
+    }
+
+    resultsContainer.innerHTML = items.slice(0, 10).map((item) => `
+      <a href="${item.url}" class="block p-3 rounded-lg hover:bg-cyber-cardHover transition-colors group">
+        <div class="flex items-center justify-between gap-2 mb-1">
+          <h4 class="text-sm font-semibold text-white group-hover:text-cyber-accent line-clamp-1">${item.title}</h4>
+          <span class="text-[11px] font-mono text-cyber-muted shrink-0">${item.pubDate || ''}</span>
+        </div>
+        <p class="text-xs text-cyber-muted line-clamp-1 mb-2">${item.description || ''}</p>
+        <div class="flex flex-wrap gap-1">
+          ${(item.tags || []).slice(0, 4).map((t: string) => `
+            <span class="text-[10px] font-mono bg-cyber-bg px-1.5 py-0.5 rounded text-cyber-cyan">#${t}</span>
+          `).join('')}
+        </div>
+      </a>
+    `).join('');
+  }
+</script>

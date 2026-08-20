@@ -1,0 +1,311 @@
+---
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('posts');
+
+// Select high-impact featured research posts (pinned or critical)
+const featuredPosts = allPosts
+  .filter((p) => p.data.pin || p.data.severity === 'CRITICAL' || p.data.bounty || p.data.categories?.includes('Custom Tool') || p.data.categories?.includes('Active Directory'))
+  .slice(0, 5);
+---
+
+<div class="featured-carousel-wrapper relative bg-[#1e1e1e] border border-[#2c2d2d] rounded-2xl overflow-hidden shadow-2xl group transition-all duration-300">
+  <!-- Top Telemetry Status Bar -->
+  <div class="flex items-center justify-between px-4 py-2.5 bg-[#141416] border-b border-[#2c2d2d] text-xs font-mono">
+    <div class="flex items-center gap-2">
+      <span class="flex h-2 w-2 relative">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyber-accent opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-cyber-accent"></span>
+      </span>
+      <span class="text-cyber-accent font-bold tracking-wider uppercase text-[11px]">FEATURED RESEARCH & EXPLOITS</span>
+    </div>
+    <div class="flex items-center gap-3 text-cyber-muted text-[11px]">
+      <span class="hidden sm:inline font-mono">AUTO-ROTATE: 5s</span>
+      <span class="carousel-counter font-bold text-white">1 / {featuredPosts.length}</span>
+    </div>
+  </div>
+
+  <!-- Slides Container -->
+  <div class="relative min-h-[370px] sm:min-h-[350px] md:min-h-[340px] overflow-hidden">
+    {featuredPosts.map((post, idx) => (
+      <div
+        class={`carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out p-4 sm:p-6 md:p-7 flex flex-col justify-between ${
+          idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+        }`}
+        data-slide-index={idx}
+      >
+        <!-- Slide Top Badges & Content -->
+        <div class="space-y-2.5 sm:space-y-3">
+          <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            {post.data.severity && (
+              <span class="px-2 sm:px-2.5 py-0.5 rounded text-[10px] font-mono font-extrabold bg-red-500/15 text-red-400 border border-red-500/30 uppercase tracking-wide">
+                ⚡ {post.data.severity} SEVERITY
+              </span>
+            )}
+            {post.data.bounty && (
+              <span class="px-2 sm:px-2.5 py-0.5 rounded text-[10px] font-mono font-extrabold bg-amber-500/15 text-amber-400 border border-amber-500/30 uppercase tracking-wide">
+                💰 {post.data.bounty} BOUNTY
+              </span>
+            )}
+            {post.data.categories?.map((cat) => (
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyber-bg text-cyber-cyan border border-cyber-border uppercase">
+                {cat}
+              </span>
+            ))}
+            <span class="text-xs font-mono text-cyber-muted ml-auto hidden sm:inline">
+              {post.data.pubDate}
+            </span>
+          </div>
+
+          <!-- Title (Max 2 lines to ensure zero button cut-off) -->
+          <h2 class="text-lg sm:text-2xl md:text-3xl font-extrabold text-white font-sans hover:text-cyber-accent transition-colors leading-snug line-clamp-2">
+            <a href={`/posts/${post.slug}`} title={post.data.title}>
+              {post.data.title}
+            </a>
+          </h2>
+
+          <!-- Description / Excerpt -->
+          <p class="text-xs sm:text-sm text-[#afb0b1] leading-relaxed line-clamp-2 sm:line-clamp-3">
+            {post.data.description}
+          </p>
+        </div>
+
+        <!-- Slide Bottom CTA & Tags (Always fully visible with comfortable padding) -->
+        <div class="pt-3 sm:pt-4 border-t border-[#2c2d2d]/60 flex flex-wrap items-center justify-between gap-3 mt-auto">
+          <div class="flex flex-wrap gap-1.5 hidden sm:flex">
+            {post.data.tags?.slice(0, 3).map((tag) => (
+              <span class="text-[11px] font-mono text-cyber-muted bg-[#141416] px-2 py-0.5 rounded border border-[#2c2d2d]">
+                #{tag}
+              </span>
+            ))}
+          </div>
+
+          <a
+            href={`/posts/${post.slug}`}
+            class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-cyber-accent text-black font-mono font-bold text-xs hover:bg-[#00f290] transition-all shadow-[0_0_15px_rgba(0,220,130,0.35)] hover:shadow-[0_0_20px_rgba(0,220,130,0.5)] shrink-0 select-none cursor-pointer"
+          >
+            <span data-i18n="analyzePoC">Analyze Full PoC & Exploit</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- Bottom Navigation & Progress Bar -->
+  <div class="px-4 py-3 bg-[#141416] border-t border-[#2c2d2d] flex items-center justify-between gap-4">
+    <!-- Slide Indicator Dots -->
+    <div class="flex items-center gap-2">
+      {featuredPosts.map((_, idx) => (
+        <button
+          type="button"
+          class={`carousel-dot h-2 rounded-full transition-all duration-300 cursor-pointer ${
+            idx === 0 ? 'w-6 bg-cyber-accent' : 'w-2 bg-cyber-muted/40 hover:bg-cyber-muted'
+          }`}
+          data-goto-slide={idx}
+          aria-label={`Go to slide ${idx + 1}`}
+        />
+      ))}
+    </div>
+
+    <!-- Controls (Prev / Play-Pause / Next) -->
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        id="carousel-prev"
+        class="p-1.5 rounded-lg bg-[#1e1e1e] border border-[#2c2d2d] text-cyber-muted hover:text-white hover:border-cyber-accent transition-colors"
+        aria-label="Previous research slide"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+
+      <button
+        type="button"
+        id="carousel-toggle-play"
+        class="p-1.5 rounded-lg bg-[#1e1e1e] border border-[#2c2d2d] text-cyber-accent hover:border-cyber-accent transition-colors text-xs font-mono px-2"
+        aria-label="Pause or resume auto-rotation"
+      >
+        <span id="carousel-play-icon">❚❚</span>
+      </button>
+
+      <button
+        type="button"
+        id="carousel-next"
+        class="p-1.5 rounded-lg bg-[#1e1e1e] border border-[#2c2d2d] text-cyber-muted hover:text-white hover:border-cyber-accent transition-colors"
+        aria-label="Next research slide"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- 5-Second Animated Progress Bar -->
+  <div class="h-1 w-full bg-[#141416] overflow-hidden">
+    <div id="carousel-progress-bar" class="h-full bg-cyber-accent w-0 transition-all"></div>
+  </div>
+</div>
+
+<script>
+  function initFeaturedCarousel() {
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.carousel-dot');
+    const counter = document.querySelector('.carousel-counter');
+    const progressBar = document.getElementById('carousel-progress-bar');
+    const prevBtn = document.getElementById('carousel-prev');
+    const nextBtn = document.getElementById('carousel-next');
+    const toggleBtn = document.getElementById('carousel-toggle-play');
+    const playIcon = document.getElementById('carousel-play-icon');
+    const wrapper = document.querySelector('.featured-carousel-wrapper');
+
+    if (!slides.length) return;
+
+    let currentIndex = 0;
+    const totalSlides = slides.length;
+    const duration = 5000; // 5 seconds per slide
+    let timer: number | null = null;
+    let progressInterval: number | null = null;
+    let isPlaying = true;
+    let startTime = Date.now();
+
+    function showSlide(index: number) {
+      currentIndex = (index + totalSlides) % totalSlides;
+
+      slides.forEach((slide, idx) => {
+        if (idx === currentIndex) {
+          slide.classList.remove('opacity-0', 'pointer-events-none', 'z-0');
+          slide.classList.add('opacity-100', 'z-10');
+        } else {
+          slide.classList.remove('opacity-100', 'z-10');
+          slide.classList.add('opacity-0', 'pointer-events-none', 'z-0');
+        }
+      });
+
+      dots.forEach((dot, idx) => {
+        if (idx === currentIndex) {
+          dot.classList.remove('w-2', 'bg-cyber-muted/40');
+          dot.classList.add('w-6', 'bg-cyber-accent');
+        } else {
+          dot.classList.remove('w-6', 'bg-cyber-accent');
+          dot.classList.add('w-2', 'bg-cyber-muted/40');
+        }
+      });
+
+      if (counter) {
+        counter.textContent = `${currentIndex + 1} / ${totalSlides}`;
+      }
+
+      resetProgress();
+    }
+
+    function resetProgress() {
+      if (progressBar) {
+        progressBar.style.transition = 'none';
+        progressBar.style.width = '0%';
+        setTimeout(() => {
+          if (isPlaying && progressBar) {
+            progressBar.style.transition = `width ${duration}ms linear`;
+            progressBar.style.width = '100%';
+          }
+        }, 30);
+      }
+      startTime = Date.now();
+    }
+
+    function nextSlide() {
+      showSlide(currentIndex + 1);
+    }
+
+    function prevSlide() {
+      showSlide(currentIndex - 1);
+    }
+
+    function startTimer() {
+      stopTimer();
+      isPlaying = true;
+      if (playIcon) playIcon.textContent = '❚❚';
+      resetProgress();
+      timer = window.setInterval(nextSlide, duration);
+    }
+
+    function stopTimer() {
+      isPlaying = false;
+      if (timer) clearInterval(timer);
+      if (playIcon) playIcon.textContent = '▶';
+      if (progressBar) {
+        progressBar.style.transition = 'none';
+      }
+    }
+
+    function togglePlay() {
+      if (isPlaying) {
+        stopTimer();
+      } else {
+        startTimer();
+      }
+    }
+
+    // Attach Event Listeners
+    prevBtn?.addEventListener('click', () => {
+      prevSlide();
+      if (isPlaying) startTimer();
+    });
+
+    nextBtn?.addEventListener('click', () => {
+      nextSlide();
+      if (isPlaying) startTimer();
+    });
+
+    toggleBtn?.addEventListener('click', togglePlay);
+
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        const targetIdx = parseInt(dot.getAttribute('data-goto-slide') || '0', 10);
+        showSlide(targetIdx);
+        if (isPlaying) startTimer();
+      });
+    });
+
+    // Pause on hover
+    wrapper?.addEventListener('mouseenter', () => {
+      if (isPlaying && timer) {
+        clearInterval(timer);
+        if (progressBar) progressBar.style.animationPlayState = 'paused';
+      }
+    });
+
+    wrapper?.addEventListener('mouseleave', () => {
+      if (isPlaying) {
+        startTimer();
+      }
+    });
+
+    // Touch Swipe for Mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    wrapper?.addEventListener('touchstart', (e: any) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    wrapper?.addEventListener('touchend', (e: any) => {
+      touchEndX = e.changedTouches[0].screenX;
+      if (touchEndX < touchStartX - 50) {
+        nextSlide();
+        if (isPlaying) startTimer();
+      }
+      if (touchEndX > touchStartX + 50) {
+        prevSlide();
+        if (isPlaying) startTimer();
+      }
+    }, { passive: true });
+
+    // Initial start
+    startTimer();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFeaturedCarousel);
+  } else {
+    initFeaturedCarousel();
+  }
+</script>

@@ -1,0 +1,162 @@
+[
+  {
+    "name": "Codify",
+    "os": "Linux",
+    "difficulty": "Easy",
+    "platform": "HackTheBox",
+    "skills": "vm2 sandbox escape, hashcat, bash script injection",
+    "writeupUrl": "/posts/codify-htb"
+  },
+  {
+    "name": "Manager",
+    "os": "Windows",
+    "difficulty": "Medium",
+    "platform": "HackTheBox",
+    "skills": "ADCS, Active Directory, Certificate abuse",
+    "writeupUrl": "/posts/manager-htb"
+  },
+  {
+    "name": "Lame",
+    "os": "Linux",
+    "difficulty": "Easy",
+    "platform": "HackTheBox",
+    "skills": "Samba Usermap Script RCE",
+    "writeupUrl": "/posts/lame-htb"
+  },
+  {
+    "name": "Resolute",
+    "os": "Windows",
+    "difficulty": "Medium",
+    "platform": "HackTheBox",
+    "skills": "Active Directory, DnsAdmins PrivEsc",
+    "writeupUrl": "/posts/Resolute-HacktheBox"
+  },
+  {
+    "name": "Arctic",
+    "os": "Windows",
+    "difficulty": "Easy",
+    "platform": "HackTheBox",
+    "skills": "ColdFusion 8 RCE, MS10-059 PrivEsc",
+    "writeupUrl": "/posts/Arctic-HacktheBox"
+  },
+  {
+    "name": "Attacktive Directory",
+    "os": "Windows",
+    "difficulty": "Medium",
+    "platform": "TryHackMe",
+    "skills": "Kerbrute, ASREPRoasting, Secretsdump",
+    "writeupUrl": "/posts/attacktive-drectory-tryhackme"
+  },
+  {
+    "name": "Vulnversity",
+    "os": "Linux",
+    "difficulty": "Easy",
+    "platform": "TryHackMe",
+    "skills": "FileUpload extension bypass, SUID systemctl",
+    "writeupUrl": "/posts/Vulnversity-TryHackMe"
+  },
+  {
+    "name": "Broker",
+    "os": "Linux",
+    "difficulty": "Easy",
+    "platform": "HackTheBox",
+    "skills": "ActiveMQ CVE-2023-46604 RCE, sudo nginx",
+    "writeupUrl": "/posts/broker-htb"
+  },
+  {
+    "name": "Dancing",
+    "os": "Windows",
+    "difficulty": "Very Easy",
+    "platform": "HackTheBox",
+    "skills": "SMB anonymous access",
+    "writeupUrl": "/posts/Dancing-HacktheBox"
+  },
+  {
+    "name": "Spring4Shell",
+    "os": "Linux",
+    "difficulty": "Medium",
+    "platform": "CVE Research",
+    "skills": "CVE-2022-22965 DataBinder ClassLoader RCE",
+    "writeupUrl": "/posts/spring4shell-hacking"
+  },
+  {
+    "name": "Shadow Phishing 2",
+    "os": "Linux",
+    "difficulty": "Medium",
+    "platform": "TryHackMe",
+    "skills": "Phishing analysis, email header forensics",
+    "writeupUrl": "/posts/shadow-phishing2"
+  },
+  {
+    "name": "Shadow Phishing",
+    "os": "Linux",
+    "difficulty": "Easy",
+    "platform": "TryHackMe",
+    "skills": "Phishing investigation, IOC extraction",
+    "writeupUrl": "/posts/shadow-phishing"
+  },
+  {
+    "name": "Ghost Phishing",
+    "os": "Linux",
+    "difficulty": "Easy",
+    "platform": "TryHackMe",
+    "skills": "Social engineering analysis, email headers",
+    "writeupUrl": "/posts/ghost-phishing"
+  },
+  {
+    "name": "Publisher",
+    "os": "Linux",
+    "difficulty": "Easy",
+    "platform": "TryHackMe",
+    "skills": "SPIP CMS RCE, AppArmor bypass",
+    "writeupUrl": "/posts/publisher-tryhackme"
+  },
+  {
+    "name": "Netmon",
+    "os": "Windows",
+    "difficulty": "Easy",
+    "platform": "HackTheBox",
+    "skills": "PRTG Network Monitor RCE",
+    "writeupUrl": "/posts/netmon"
+  },
+  {
+    "name": "Artificial",
+    "os": "Linux",
+    "difficulty": "Medium",
+    "platform": "HackTheBox",
+    "skills": "TensorFlow RCE, backup script PrivEsc",
+    "writeupUrl": "/posts/active-hackthebox"
+  },
+  {
+    "name": "VulnNet: Internal",
+    "os": "Linux",
+    "difficulty": "Medium",
+    "platform": "TryHackMe",
+    "skills": "Redis RCE, TeamCity exploitation",
+    "writeupUrl": "/posts/vulnet-internal-tryhackme"
+  },
+  {
+    "name": "DC-1",
+    "os": "Linux",
+    "difficulty": "Easy",
+    "platform": "VulnHub",
+    "skills": "Drupalgeddon 2 RCE, find SUID PrivEsc",
+    "writeupUrl": "/posts/hacking-dc1"
+  },
+  {
+    "name": "PicoCTF 2024",
+    "os": "Linux",
+    "difficulty": "Easy",
+    "platform": "PicoCTF",
+    "skills": "Web exploitation, binary reverse engineering",
+    "writeupUrl": "/posts/picoctf-2024"
+  },
+  {
+    "name": "Password Cracking Guide",
+    "os": "All",
+    "difficulty": "Guide",
+    "platform": "Offensive Security",
+    "skills": "Hashcat, John the Ripper, Custom rules, wordlists",
+    "writeupUrl": "/posts/password-cracking"
+  }
+]

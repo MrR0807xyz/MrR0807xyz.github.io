@@ -1,0 +1,89 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RightSidebar from '../../components/RightSidebar.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('posts');
+
+const categoryMap: Record<string, typeof allPosts> = {};
+
+allPosts.forEach((post) => {
+  post.data.categories?.forEach((cat) => {
+    const key = cat.toLowerCase();
+    if (!categoryMap[key]) categoryMap[key] = [];
+    categoryMap[key].push(post);
+  });
+});
+
+const sortedCategories = Object.entries(categoryMap).sort((a, b) => b[1].length - a[1].length);
+---
+
+<BaseLayout title="Categories">
+  <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 w-full max-w-7xl mx-auto">
+    <div class="xl:col-span-8 w-full min-w-0 space-y-6">
+      <Breadcrumb items={[{ label: 'CATEGORIES' }]} />
+
+      <header class="pb-4 border-b border-[#2c2d2d]">
+        <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-white mb-2 font-mono flex items-center gap-3">
+          <svg class="w-6 h-6 sm:w-7 sm:h-7 text-cyber-cyan shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+          <span data-i18n="categoriesTitle">Categories</span>
+        </h1>
+        <p class="text-xs font-mono text-[#868686]" data-i18n="categoriesSubtitle">
+          Browse writeups organized by target platform, lab, and research domain.
+        </p>
+      </header>
+
+      <div class="space-y-4 sm:space-y-5">
+        {sortedCategories.map(([category, posts]) => (
+          <div class="bg-[#1e1e1e] border border-[#2c2d2d] rounded-xl p-4 sm:p-6 shadow-sm hover:border-cyber-accent/40 transition-colors">
+            <div class="flex items-center justify-between gap-2 flex-wrap pb-3 mb-3 sm:mb-4 border-b border-[#2c2d2d]/60">
+              <a
+                href={`/categories/${category}`}
+                class="text-sm sm:text-base md:text-lg font-bold text-cyber-cyan hover:text-cyber-accent uppercase font-mono tracking-wider transition-colors flex items-center gap-2"
+              >
+                📁 {category}
+              </a>
+              <span class="text-[11px] sm:text-xs font-mono text-[#868686] bg-[#141416] px-2.5 py-0.5 sm:py-1 rounded-full border border-[#2c2d2d]">
+                {posts.length} {posts.length === 1 ? 'post' : 'posts'}
+              </span>
+            </div>
+
+            <ul class="space-y-2 sm:space-y-2.5">
+              {posts.slice(0, 5).map((post) => (
+                <li>
+                  <a
+                    href={`/posts/${post.slug}`}
+                    class="flex items-center justify-between gap-3 text-xs sm:text-sm text-[#afb0b1] hover:text-cyber-accent group transition-colors"
+                  >
+                    <span class="group-hover:translate-x-1 transition-transform line-clamp-1 min-w-0 flex-1">
+                      • {post.data.title}
+                    </span>
+                    <span class="text-[11px] font-mono text-[#868686] shrink-0 hidden sm:inline-block">
+                      {post.data.pubDate}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+
+            {posts.length > 5 && (
+              <div class="mt-3 pt-2 border-t border-[#2c2d2d]/40">
+                <a
+                  href={`/categories/${category}`}
+                  class="text-xs font-mono text-cyber-accent hover:underline flex items-center gap-1 font-semibold"
+                >
+                  View all {posts.length} articles in {category} →
+                </a>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="hidden xl:block xl:col-span-4 w-full">
+      <RightSidebar />
+    </div>
+  </div>
+</BaseLayout>

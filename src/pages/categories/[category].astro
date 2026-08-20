@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import RightSidebar from '../../components/RightSidebar.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('posts');
+  const categories = new Set<string>();
+
+  allPosts.forEach((post) => {
+    post.data.categories?.forEach((c) => categories.add(c.toLowerCase()));
+  });
+
+  return Array.from(categories).map((cat) => {
+    const filteredPosts = allPosts.filter((post) =>
+      post.data.categories?.some((c) => c.toLowerCase() === cat)
+    );
+    return {
+      params: { category: cat },
+      props: { posts: filteredPosts, categoryName: cat },
+    };
+  });
+}
+
+const { category } = Astro.params;
+const { posts, categoryName } = Astro.props;
+
+const sortedPosts = posts.sort(
+  (a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
+);
+---
+
+<BaseLayout title={`Category: ${categoryName?.toUpperCase()}`}>
+  <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 w-full max-w-7xl mx-auto">
+    <div class="xl:col-span-8 w-full min-w-0 space-y-6">
+      <Breadcrumb
+        items={[
+          { label: 'CATEGORIES', href: '/categories' },
+          { label: categoryName?.toUpperCase() || '' },
+        ]}
+      />
+
+      <header class="mb-6 pb-4 border-b border-[#2c2d2d]">
+        <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-white mb-2 font-mono flex items-center gap-3 flex-wrap">
+          <span>📁</span>
+          <span class="uppercase">{categoryName}</span>
+          <span class="text-xs font-mono font-normal text-[#868686] bg-[#1e1e1e] px-2.5 py-1 rounded-full border border-[#2c2d2d]">
+            {posts.length} {posts.length === 1 ? 'article' : 'articles'}
+          </span>
+        </h1>
+      </header>
+
+      <div class="space-y-4">
+        {sortedPosts.map((post) => (
+          <PostCard
+            title={post.data.title}
+            description={post.data.description}
+            pubDate={post.data.pubDate}
+            categories={post.data.categories}
+            tags={post.data.tags}
+            pin={post.data.pin}
+            image={post.data.image}
+            url={`/posts/${post.slug}`}
+            severity={post.data.severity}
+            bounty={post.data.bounty}
+          />
+        ))}
+      </div>
+    </div>
+
+    <div class="hidden xl:block xl:col-span-4 w-full">
+      <RightSidebar />
+    </div>
+  </div>
+</BaseLayout>

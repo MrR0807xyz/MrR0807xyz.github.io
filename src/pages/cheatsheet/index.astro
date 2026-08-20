@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RightSidebar from '../../components/RightSidebar.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { getCollection } from 'astro:content';
+
+const cheatsheets = await getCollection('cheatsheets');
+---
+
+<BaseLayout title="Offensive Security Cheatsheets">
+  <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 w-full max-w-7xl mx-auto">
+    <div class="xl:col-span-8 w-full min-w-0 space-y-6">
+      <Breadcrumb items={[{ label: 'CHEATSHEETS' }]} />
+
+      <header class="pb-4 border-b border-[#2c2d2d]">
+        <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-white mb-2 font-mono flex items-center gap-3 flex-wrap">
+          <svg class="w-6 h-6 sm:w-7 sm:h-7 text-cyber-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <span data-i18n="cheatsheetTitle">Offensive Security Cheatsheets</span> <span class="text-sm sm:text-base font-normal text-[#868686]">({cheatsheets.length})</span>
+        </h1>
+        <p class="text-xs font-mono text-[#868686]" data-i18n="cheatsheetSubtitle">
+          Quick-access commands, exploitation payloads, privilege escalation vectors, and Active Directory methodologies.
+        </p>
+      </header>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {cheatsheets.map((cs) => (
+          <a
+            href={`/cheatsheet/${cs.slug}`}
+            class="bg-[#1e1e1e] border border-[#2c2d2d] hover:border-cyber-accent/60 rounded-xl p-4 sm:p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg group block"
+          >
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-cyber-accent font-mono text-[10px] sm:text-xs font-bold uppercase bg-[#141416] px-2 py-0.5 rounded border border-[#2c2d2d]">
+                ⚡ {cs.slug}
+              </span>
+            </div>
+            <h2 class="text-sm sm:text-base font-bold text-white group-hover:text-cyber-accent transition-colors font-mono mb-2 line-clamp-1">
+              {cs.data.title}
+            </h2>
+            <p class="text-xs text-[#868686] line-clamp-2 leading-relaxed">
+              {cs.data.description || 'Command reference and exploitation techniques.'}
+            </p>
+            <div class="mt-4 flex items-center justify-between text-xs font-mono text-cyber-cyan group-hover:translate-x-1 transition-transform">
+              <span data-i18n="viewCheatsheet">View Cheatsheet</span>
+              <span>→</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <div class="hidden xl:block xl:col-span-4 w-full">
+      <RightSidebar />
+    </div>
+  </div>
+</BaseLayout>

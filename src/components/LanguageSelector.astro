@@ -1,0 +1,193 @@
+---
+---
+
+<div class="lang-selector-container relative inline-block text-left">
+  <button
+    type="button"
+    class="lang-toggle-btn flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#1e1e1e] border border-[#2c2d2d] hover:border-[#424242] text-xs font-mono text-[#afb0b1] hover:text-white transition-all shadow-sm cursor-pointer select-none"
+    aria-expanded="false"
+  >
+    <svg class="w-3.5 h-3.5 text-cyber-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>
+    <span class="current-lang-label font-bold">EN</span>
+    <span class="text-[10px] text-[#868686]">▼</span>
+  </button>
+
+  <!-- Dropdown Menu -->
+  <div
+    class="lang-dropdown hidden absolute right-0 mt-2 w-36 origin-top-right rounded-xl bg-[#1e1e1e] border border-[#2c2d2d] shadow-2xl z-50 py-1 font-mono text-xs divide-y divide-[#2c2d2d]/60 focus:outline-none"
+  >
+    <div class="py-1">
+      <button
+        type="button"
+        data-lang="en"
+        class="lang-option flex items-center justify-between w-full px-3 py-2 text-left text-[#afb0b1] hover:bg-[#262626] hover:text-cyber-accent transition-colors cursor-pointer"
+      >
+        <span class="flex items-center gap-2">
+          <span>🇬🇧</span>
+          <span>English</span>
+        </span>
+        <span class="lang-check hidden text-cyber-accent font-bold">✓</span>
+      </button>
+
+      <button
+        type="button"
+        data-lang="ha"
+        class="lang-option flex items-center justify-between w-full px-3 py-2 text-left text-[#afb0b1] hover:bg-[#262626] hover:text-cyber-accent transition-colors cursor-pointer"
+      >
+        <span class="flex items-center gap-2">
+          <span>🇳🇬</span>
+          <span>Hausa</span>
+        </span>
+        <span class="lang-check hidden text-cyber-accent font-bold">✓</span>
+      </button>
+
+      <button
+        type="button"
+        data-lang="pcm"
+        class="lang-option flex items-center justify-between w-full px-3 py-2 text-left text-[#afb0b1] hover:bg-[#262626] hover:text-cyber-accent transition-colors cursor-pointer"
+      >
+        <span class="flex items-center gap-2">
+          <span>🇳🇬</span>
+          <span>Pidgin</span>
+        </span>
+        <span class="lang-check hidden text-cyber-accent font-bold">✓</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { TRANSLATIONS, type Language } from '../i18n/translations';
+
+  function initLanguageSelector() {
+    function triggerGoogleTranslate(lang: Language) {
+      const gtLang = lang === 'pcm' ? 'pcm' : lang === 'ha' ? 'ha' : 'en';
+
+      // Set cookie for Google Translate persistence across navigation
+      document.cookie = `googtrans=/en/${gtLang}; path=/;`;
+      document.cookie = `googtrans=/en/${gtLang}; domain=${window.location.hostname}; path=/;`;
+
+      // Trigger translate dropdown if available
+      const select = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+      if (select) {
+        select.value = gtLang;
+        select.dispatchEvent(new Event('change'));
+      } else {
+        // If Google Translate widget is still loading, wait and retry
+        let attempts = 0;
+        const interval = setInterval(() => {
+          attempts++;
+          const combo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+          if (combo) {
+            combo.value = gtLang;
+            combo.dispatchEvent(new Event('change'));
+            clearInterval(interval);
+          } else if (attempts > 15) {
+            clearInterval(interval);
+          }
+        }, 200);
+      }
+
+      // If switching back to English, reset Google Translate state
+      if (gtLang === 'en') {
+        const iframe = document.querySelector('.goog-te-banner-frame') as HTMLIFrameElement;
+        if (iframe) {
+          try {
+            const innerDoc = iframe.contentDocument || iframe.contentWindow?.document;
+            const closeBtn = innerDoc?.querySelector('.goog-close-link') as HTMLElement;
+            closeBtn?.click();
+          } catch (e) {
+            // Ignore cross-origin issues
+          }
+        }
+      }
+    }
+
+    function applyLanguage(lang: Language) {
+      localStorage.setItem('site_lang', lang);
+
+      // Update button labels
+      document.querySelectorAll('.current-lang-label').forEach((el) => {
+        el.textContent = lang.toUpperCase();
+      });
+
+      // Update checkmark in dropdowns
+      document.querySelectorAll('.lang-option').forEach((btn) => {
+        const bLang = btn.getAttribute('data-lang');
+        const check = btn.querySelector('.lang-check');
+        if (bLang === lang) {
+          check?.classList.remove('hidden');
+          btn.classList.add('text-cyber-accent', 'font-bold');
+        } else {
+          check?.classList.add('hidden');
+          btn.classList.remove('text-cyber-accent', 'font-bold');
+        }
+      });
+
+      const t = TRANSLATIONS[lang] || TRANSLATIONS.en;
+
+      // Auto-translate every element with data-i18n attribute
+      document.querySelectorAll('[data-i18n]').forEach((el) => {
+        const key = el.getAttribute('data-i18n') as keyof typeof t;
+        if (key && t[key]) {
+          if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+            el.placeholder = t[key];
+          } else {
+            el.textContent = t[key];
+          }
+        }
+      });
+
+      // Auto-translate data-i18n-placeholder
+      document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+        const key = el.getAttribute('data-i18n-placeholder') as keyof typeof t;
+        if (key && t[key] && (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement)) {
+          el.placeholder = t[key];
+        }
+      });
+
+      // Trigger whole-page translation engine
+      triggerGoogleTranslate(lang);
+    }
+
+    // Global Click Delegation
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      
+      const toggleBtn = target.closest('.lang-toggle-btn');
+      if (toggleBtn) {
+        e.stopPropagation();
+        const container = toggleBtn.closest('.lang-selector-container');
+        const dropdown = container?.querySelector('.lang-dropdown');
+        
+        document.querySelectorAll('.lang-dropdown').forEach((d) => {
+          if (d !== dropdown) d.classList.add('hidden');
+        });
+
+        dropdown?.classList.toggle('hidden');
+        return;
+      }
+
+      const optionBtn = target.closest('.lang-option');
+      if (optionBtn) {
+        e.stopPropagation();
+        const lang = (optionBtn.getAttribute('data-lang') as Language) || 'en';
+        applyLanguage(lang);
+        document.querySelectorAll('.lang-dropdown').forEach((d) => d.classList.add('hidden'));
+        return;
+      }
+
+      document.querySelectorAll('.lang-dropdown').forEach((d) => d.classList.add('hidden'));
+    });
+
+    // Initial run
+    const saved = (localStorage.getItem('site_lang') as Language) || 'en';
+    applyLanguage(saved);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLanguageSelector);
+  } else {
+    initLanguageSelector();
+  }
+</script>

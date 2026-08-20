@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import RightSidebar from '../components/RightSidebar.astro';
+import Pagination from '../components/Pagination.astro';
+import FeaturedCarousel from '../components/FeaturedCarousel.astro';
+import ImpactStats from '../components/ImpactStats.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths({ paginate }: any) {
+  const allPosts = await getCollection('posts');
+
+  // Sort posts: pinned first, then by date descending
+  const sortedPosts = allPosts.sort((a, b) => {
+    if (a.data.pin && !b.data.pin) return -1;
+    if (!a.data.pin && b.data.pin) return 1;
+    return new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime();
+  });
+
+  return paginate(sortedPosts, { pageSize: 6 });
+}
+
+const { page } = Astro.props;
+---
+
+<BaseLayout>
+  <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 w-full max-w-7xl mx-auto">
+    <!-- Posts Stream (8 of 12 cols on desktop) -->
+    <div class="xl:col-span-8 w-full min-w-0 space-y-6">
+      <!-- 5-Second Auto-Rotating Featured Research Showcase (Only on Page 1) -->
+      {page.currentPage === 1 && (
+        <div class="space-y-6">
+          <FeaturedCarousel />
+          <ImpactStats />
+        </div>
+      )}
+
+      <!-- Post Feed Header -->
+      <div class="flex items-center justify-between pt-2">
+        <h2 class="text-sm font-mono font-bold uppercase tracking-wider text-[#868686] flex items-center gap-2">
+          <svg class="w-4 h-4 text-cyber-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+          <span data-i18n="latestResearch">Latest Research & Writeups</span>
+        </h2>
+        <span class="text-xs font-mono text-[#868686]">
+          Page {page.currentPage} of {page.lastPage}
+        </span>
+      </div>
+
+      <!-- Post List Cards (6 per page) -->
+      <div class="space-y-4">
+        {page.data.map((post: any) => (
+          <PostCard
+            title={post.data.title}
+            description={post.data.description}
+            pubDate={post.data.pubDate}
+            categories={post.data.categories}
+            tags={post.data.tags}
+            pin={post.data.pin}
+            image={post.data.image}
+            url={`/posts/${post.slug}`}
+            severity={post.data.severity}
+            bounty={post.data.bounty}
+          />
+        ))}
+      </div>
+
+      <!-- Numbered Pagination Bar -->
+      <Pagination page={page} />
+    </div>
+
+    <!-- Right Sidebar Widget (4 of 12 cols on desktop) -->
+    <div class="hidden xl:block xl:col-span-4 w-full">
+      <RightSidebar />
+    </div>
+  </div>
+</BaseLayout>

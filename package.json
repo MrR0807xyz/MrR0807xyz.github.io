@@ -1,0 +1,23 @@
+{
+  "name": "mrr0807-cybersecurity-blog",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Cybersecurity & Bug Hunting Portfolio, Writeups & Cheatsheets",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "new:writeup": "node scripts/new-post.js"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^3.1.9",
+    "@astrojs/rss": "^4.0.11",
+    "@astrojs/sitemap": "^3.2.1",
+    "@astrojs/tailwind": "^5.1.5",
+    "astro": "^4.16.18",
+    "clsx": "^2.1.1",
+    "tailwindcss": "^3.4.17"
+  }
+}

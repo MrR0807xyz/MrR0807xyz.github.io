@@ -1,0 +1,72 @@
+---
+---
+
+<button
+  type="button"
+  class="theme-toggle-btn p-2 rounded-lg bg-[#1e1e1e] border border-[#2c2d2d] hover:border-[#424242] text-xs font-mono text-[#afb0b1] hover:text-white transition-all shadow-sm cursor-pointer flex items-center justify-center select-none"
+  aria-label="Toggle Dark/Light Mode"
+  title="Toggle Dark / Light Theme"
+>
+  <!-- Moon Icon (shown in Light Mode) -->
+  <svg class="theme-moon-icon w-4 h-4 text-cyber-accent hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+  </svg>
+
+  <!-- Sun Icon (shown in Dark Mode) -->
+  <svg class="theme-sun-icon w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+  </svg>
+</button>
+
+<script>
+  function initThemeToggle() {
+    function getTheme(): 'dark' | 'light' {
+      const saved = localStorage.getItem('site_theme');
+      if (saved === 'dark' || saved === 'light') return saved;
+      return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+
+    function applyTheme(theme: 'dark' | 'light') {
+      const root = document.documentElement;
+      if (theme === 'light') {
+        root.classList.remove('dark');
+        root.classList.add('light');
+        document.querySelectorAll('.theme-moon-icon').forEach(icon => icon.classList.remove('hidden'));
+        document.querySelectorAll('.theme-sun-icon').forEach(icon => icon.classList.add('hidden'));
+      } else {
+        root.classList.remove('light');
+        root.classList.add('dark');
+        document.querySelectorAll('.theme-moon-icon').forEach(icon => icon.classList.add('hidden'));
+        document.querySelectorAll('.theme-sun-icon').forEach(icon => icon.classList.remove('hidden'));
+      }
+      localStorage.setItem('site_theme', theme);
+    }
+
+    // Global Click Delegation for all theme toggle buttons
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('.theme-toggle-btn')) {
+        e.preventDefault();
+        const current = document.documentElement.classList.contains('light') ? 'light' : 'dark';
+        const nextTheme = current === 'dark' ? 'light' : 'dark';
+        applyTheme(nextTheme);
+      }
+    });
+
+    // Listen for OS theme changes
+    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
+      if (!localStorage.getItem('site_theme')) {
+        applyTheme(e.matches ? 'light' : 'dark');
+      }
+    });
+
+    // Apply current theme on load
+    applyTheme(getTheme());
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initThemeToggle);
+  } else {
+    initThemeToggle();
+  }
+</script>

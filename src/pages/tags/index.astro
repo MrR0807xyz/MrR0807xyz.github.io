@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RightSidebar from '../../components/RightSidebar.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('posts');
+
+const tagCounts: Record<string, number> = {};
+allPosts.forEach((post) => {
+  post.data.tags?.forEach((tag) => {
+    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+  });
+});
+
+const sortedTags = Object.entries(tagCounts).sort((a, b) => a[0].localeCompare(b[0]));
+---
+
+<BaseLayout title="Tags Cloud">
+  <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 w-full max-w-7xl mx-auto">
+    <div class="xl:col-span-8 w-full min-w-0 space-y-6">
+      <Breadcrumb items={[{ label: 'TAGS' }]} />
+
+      <header class="pb-4 border-b border-[#2c2d2d]">
+        <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-white mb-2 font-mono flex items-center gap-3 flex-wrap">
+          <svg class="w-6 h-6 sm:w-7 sm:h-7 text-cyber-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+          <span data-i18n="tagsTitle">Tags & Vulnerabilities</span> <span class="text-sm sm:text-base font-normal text-[#868686]">({sortedTags.length})</span>
+        </h1>
+        <p class="text-xs font-mono text-[#868686]" data-i18n="tagsSubtitle">
+          Browse by exploit techniques, vulnerabilities (CVE, RCE, IDOR), and tooling.
+        </p>
+      </header>
+
+      <div class="bg-[#1e1e1e] border border-[#2c2d2d] rounded-xl p-4 sm:p-6 md:p-8 shadow-sm">
+        <div class="flex flex-wrap gap-2 sm:gap-2.5">
+          {sortedTags.map(([tag, count]) => (
+            <a
+              href={`/tags/${tag}`}
+              class="inline-flex items-center gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-mono bg-[#141416] border border-[#2c2d2d] text-[#afb0b1] hover:text-cyber-accent hover:border-cyber-accent hover:shadow-[0_0_10px_rgba(0,220,130,0.2)] transition-all group"
+            >
+              <span>#{tag}</span>
+              <span class="text-[10px] text-[#868686] group-hover:text-cyber-accent bg-[#1e1e1e] px-1.5 py-0.5 rounded border border-[#2c2d2d]">
+                {count}
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div class="hidden xl:block xl:col-span-4 w-full">
+      <RightSidebar />
+    </div>
+  </div>
+</BaseLayout>

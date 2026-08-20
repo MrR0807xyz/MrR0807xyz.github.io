@@ -1,0 +1,86 @@
+---
+import { getCollection } from 'astro:content';
+import { SITE_CONFIG } from '../config';
+import TerminalWidget from './TerminalWidget.astro';
+
+const allPosts = await getCollection('posts');
+
+// Sort by date desc
+const recentPosts = allPosts
+  .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime())
+  .slice(0, 5);
+
+// Count tags frequency
+const tagCounts: Record<string, number> = {};
+allPosts.forEach((post) => {
+  post.data.tags?.forEach((tag) => {
+    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+  });
+});
+
+const trendingTags = Object.entries(tagCounts)
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 16);
+---
+
+<aside class="w-full space-y-6 sticky top-24">
+  <!-- Interactive Red Team Terminal Console -->
+  <TerminalWidget />
+
+  <!-- PGP / Security Researcher Card -->
+  {SITE_CONFIG.pgp && (
+    <div class="bg-[#1e1e1e] border border-[#2c2d2d] rounded-xl p-4 shadow-sm">
+      <div class="flex items-center gap-2 mb-2">
+        <svg class="w-4 h-4 text-cyber-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-white font-mono" data-i18n="pgpFingerprint">PGP Fingerprint</h3>
+      </div>
+      <p class="text-[11px] font-mono text-[#868686] bg-[#141416] p-2 rounded border border-[#2c2d2d]/60 break-all select-all">
+        {SITE_CONFIG.pgp.fingerprint}
+      </p>
+    </div>
+  )}
+
+  <!-- Recently Updated -->
+  <div class="bg-[#1e1e1e] border border-[#2c2d2d] rounded-xl p-5 shadow-sm">
+    <div class="flex items-center gap-2 mb-4 pb-2 border-b border-[#2c2d2d]/60">
+      <svg class="w-4 h-4 text-cyber-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <h3 class="text-xs font-bold uppercase tracking-wider text-white font-mono" data-i18n="recentlyUpdated">Recently Updated</h3>
+    </div>
+    <ul class="space-y-3">
+      {recentPosts.map((post) => (
+        <li>
+          <a
+            href={`/posts/${post.slug}`}
+            class="group block text-xs hover:text-cyber-cyan transition-colors"
+          >
+            <span class="text-[#afb0b1] group-hover:text-cyber-cyan font-medium line-clamp-2 leading-relaxed">
+              {post.data.title}
+            </span>
+            <span class="text-[11px] text-[#868686] font-mono mt-0.5 block">
+              {post.data.pubDate}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <!-- Trending Tags -->
+  <div class="bg-[#1e1e1e] border border-[#2c2d2d] rounded-xl p-5 shadow-sm">
+    <div class="flex items-center gap-2 mb-4 pb-2 border-b border-[#2c2d2d]/60">
+      <svg class="w-4 h-4 text-cyber-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+      <h3 class="text-xs font-bold uppercase tracking-wider text-white font-mono" data-i18n="trendingTags">Trending Tags</h3>
+    </div>
+    <div class="flex flex-wrap gap-1.5">
+      {trendingTags.map(([tag, count]) => (
+        <a
+          href={`/tags/${tag}`}
+          class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono bg-[#141416] border border-[#2c2d2d]/80 text-[#868686] hover:text-cyber-accent hover:border-cyber-accent/50 transition-all"
+        >
+          <span>#{tag}</span>
+          <span class="text-[10px] text-[#868686]/80 bg-[#1e1e1e] px-1 rounded">{count}</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</aside>

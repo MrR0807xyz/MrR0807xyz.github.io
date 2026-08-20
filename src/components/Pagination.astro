@@ -1,0 +1,88 @@
+---
+interface Props {
+  page: {
+    currentPage: number;
+    lastPage: number;
+    url: {
+      current: string;
+      prev: string | undefined;
+      next: string | undefined;
+      first: string | undefined;
+      last: string | undefined;
+    };
+    total: number;
+  };
+}
+
+const { page } = Astro.props;
+
+// Generate page number array
+const totalPages = page.lastPage;
+const current = page.currentPage;
+
+function getPageUrl(pageNum: number) {
+  if (pageNum === 1) return '/';
+  return `/${pageNum}`;
+}
+
+const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+---
+
+{totalPages > 1 && (
+  <nav aria-label="Pagination" class="mt-8 pt-6 border-t border-[#2c2d2d] flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs">
+    <!-- Page Counter Summary -->
+    <div class="text-[#868686] text-center md:text-left shrink-0">
+      <span data-i18n="showingPage">Showing Page</span> <span class="text-white font-bold">{current}</span> <span data-i18n="of">of</span> <span class="text-white font-bold">{totalPages}</span> <span class="text-[11px] text-[#868686]/80">({page.total} <span data-i18n="totalWriteups">total writeups</span>)</span>
+    </div>
+
+    <!-- Numbered Navigation Buttons -->
+    <div class="flex items-center gap-1.5 flex-nowrap overflow-x-auto max-w-full justify-center pb-1 md:pb-0">
+      <!-- Previous Button -->
+      {page.url.prev ? (
+        <a
+          href={page.url.prev === '/1' ? '/' : page.url.prev}
+          class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#1e1e1e] border border-[#2c2d2d] text-[#afb0b1] hover:text-white hover:border-cyber-accent transition-colors flex items-center gap-1 shrink-0"
+          aria-label="Previous page"
+          data-i18n="prev"
+        >
+          ← Prev
+        </a>
+      ) : (
+        <span class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#141416] border border-[#2c2d2d]/40 text-[#868686]/40 cursor-not-allowed select-none shrink-0" data-i18n="prev">
+          ← Prev
+        </span>
+      )}
+
+      <!-- Page Numbers -->
+      {pages.map((p) => (
+        <a
+          href={getPageUrl(p)}
+          class={`min-w-[30px] sm:min-w-[32px] h-8 flex items-center justify-center rounded-lg font-mono text-xs transition-all shrink-0 ${
+            p === current
+              ? 'bg-cyber-accent text-black font-bold shadow-[0_0_10px_rgba(0,220,130,0.3)]'
+              : 'bg-[#1e1e1e] border border-[#2c2d2d] text-[#afb0b1] hover:text-white hover:border-[#424242]'
+          }`}
+          aria-current={p === current ? 'page' : undefined}
+        >
+          {p}
+        </a>
+      ))}
+
+      <!-- Next Button -->
+      {page.url.next ? (
+        <a
+          href={page.url.next}
+          class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#1e1e1e] border border-[#2c2d2d] text-[#afb0b1] hover:text-white hover:border-cyber-accent transition-colors flex items-center gap-1 shrink-0"
+          aria-label="Next page"
+          data-i18n="next"
+        >
+          Next →
+        </a>
+      ) : (
+        <span class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#141416] border border-[#2c2d2d]/40 text-[#868686]/40 cursor-not-allowed select-none shrink-0" data-i18n="next">
+          Next →
+        </span>
+      )}
+    </div>
+  </nav>
+)}

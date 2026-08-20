@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RightSidebar from '../components/RightSidebar.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('posts');
+
+// Sort by date desc
+const sortedPosts = allPosts.sort(
+  (a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
+);
+
+// Group by Year
+const postsByYear: Record<string, typeof allPosts> = {};
+sortedPosts.forEach((post) => {
+  const year = (post.data.pubDate || '2024').slice(0, 4);
+  if (!postsByYear[year]) postsByYear[year] = [];
+  postsByYear[year].push(post);
+});
+
+const years = Object.keys(postsByYear).sort((a, b) => b.localeCompare(a));
+---
+
+<BaseLayout title="All Posts & Archives">
+  <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 w-full max-w-7xl mx-auto">
+    <div class="xl:col-span-8 w-full min-w-0 space-y-8">
+      <Breadcrumb items={[{ label: 'ALL POSTS' }]} />
+
+      <header class="pb-4 border-b border-[#2c2d2d]">
+        <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-white mb-2 font-mono flex items-center gap-3 flex-wrap">
+          <svg class="w-6 h-6 sm:w-7 sm:h-7 text-cyber-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+          <span data-i18n="allPostsTitle">All Posts Archive</span> <span class="text-sm sm:text-base font-normal text-[#868686]">({sortedPosts.length})</span>
+        </h1>
+        <p class="text-xs font-mono text-[#868686]" data-i18n="allPostsSubtitle">
+          Chronological timeline of all published writeups and vulnerability reports.
+        </p>
+      </header>
+
+      <div class="space-y-10">
+        {years.map((year) => (
+          <section class="space-y-4">
+            <div class="flex items-center gap-3">
+              <span class="text-lg sm:text-xl font-bold font-mono text-cyber-accent">
+                {year}
+              </span>
+              <div class="h-px flex-1 bg-[#2c2d2d]"></div>
+              <span class="text-[11px] sm:text-xs font-mono text-[#868686] bg-[#1e1e1e] px-2 py-0.5 rounded border border-[#2c2d2d]">
+                {postsByYear[year].length} {postsByYear[year].length === 1 ? 'post' : 'posts'}
+              </span>
+            </div>
+
+            <ul class="space-y-3 pl-2 border-l border-[#2c2d2d]/60">
+              {postsByYear[year].map((post) => (
+                <li class="relative pl-6 before:content-[''] before:absolute before:left-[-5px] before:top-2 before:w-2.5 before:h-2.5 before:rounded-full before:bg-[#1e1e1e] before:border-2 before:border-cyber-cyan hover:before:bg-cyber-cyan transition-colors">
+                  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 group">
+                    <a
+                      href={`/posts/${post.slug}`}
+                      class="text-xs sm:text-sm font-semibold text-[#afb0b1] group-hover:text-cyber-accent transition-colors line-clamp-1 min-w-0 flex-1"
+                    >
+                      {post.data.title}
+                    </a>
+                    <span class="text-[11px] font-mono text-[#868686] shrink-0">
+                      {post.data.pubDate}
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+    </div>
+
+    <div class="hidden xl:block xl:col-span-4 w-full">
+      <RightSidebar />
+    </div>
+  </div>
+</BaseLayout>
