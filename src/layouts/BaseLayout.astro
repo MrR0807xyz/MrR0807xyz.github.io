@@ -3,6 +3,7 @@ import Sidebar from '../components/Sidebar.astro';
 import SearchModal from '../components/SearchModal.astro';
 import LanguageSelector from '../components/LanguageSelector.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
+import CyberBootLoader from '../components/CyberBootLoader.astro';
 import { SITE_CONFIG } from '../config';
 import '../styles/global.css';
 
@@ -81,6 +82,9 @@ const fullTitle = title === SITE_CONFIG.title ? title : `${title} | ${SITE_CONFI
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;0,900;1,400&display=swap" rel="stylesheet" />
   </head>
   <body class="bg-cyber-bg text-cyber-text min-h-screen antialiased flex flex-col lg:flex-row font-sans">
+    <!-- Cinematic Cyber / Mr. Robot Bootloader -->
+    <CyberBootLoader />
+
     <!-- Left Sidebar (Desktop + Mobile Drawer) -->
     <Sidebar />
 
