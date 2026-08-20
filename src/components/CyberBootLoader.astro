@@ -66,6 +66,32 @@ const asciiBanner = ` __  __       ____   ___  ___  _____
     const loader = document.getElementById('cyber-bootloader');
     if (!loader) return;
 
+    // Check if this navigation is a browser page reload/refresh
+    let isReload = false;
+    try {
+      const navEntry = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+      if (navEntry && navEntry.type === 'reload') {
+        isReload = true;
+      } else if (window.performance && window.performance.navigation && window.performance.navigation.type === 1) {
+        isReload = true;
+      }
+    } catch (e) {}
+
+    // Check if this is the first visit in the current browser tab session
+    const hasVisited = sessionStorage.getItem('mrr0807_session_booted');
+
+    // If already visited and NOT a page reload (i.e. user simply clicked a link/page), bypass immediately
+    if (hasVisited && !isReload) {
+      loader.style.display = 'none';
+      if (loader.parentNode) {
+        loader.parentNode.removeChild(loader);
+      }
+      return;
+    }
+
+    // Mark current session as booted
+    sessionStorage.setItem('mrr0807_session_booted', 'true');
+
     const logContainer = document.getElementById('boot-log-container');
     const progressBar = document.getElementById('boot-progress-bar');
     const percentLabel = document.getElementById('boot-percent');
